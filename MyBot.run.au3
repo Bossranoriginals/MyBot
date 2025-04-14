@@ -66,7 +66,7 @@ getAllEmulators()
 MainLoop(CheckPrerequisites())
 
 Func UpdateBotTitle()
-	Local $sTitle = "My Bot " & $g_sBotVersion
+	Local $sTitle = "My Bot " & $g_sBotVersion & " (Mod by LowkeySen)"
 	Local $sConsoleTitle ; Console title has also Android Emulator Name
 	If $g_sBotTitle = "" Then
 		$g_sBotTitle = $sTitle
@@ -709,8 +709,8 @@ Func runBot() ;Bot that runs everything in order
 		PrepareDonateCC()
 		If Not $g_bRunState Then Return
 		$g_bRestart = False
-		$g_bFullArmy = False
-		$g_bIsFullArmywithHeroesAndSpells = False
+		$g_bFullArmy = True
+		$g_bIsFullArmywithHeroesAndSpells = True
 		$g_iCommandStop = -1
 		If _Sleep($DELAYRUNBOT1) Then Return
 		checkMainScreen()
@@ -818,8 +818,6 @@ Func runBot() ;Bot that runs everything in order
 				If CheckAndroidReboot() Then ContinueLoop 2 ; must be level 2 due to loop-in-loop
 			Next
 
-			HelperHut()
-
 			If $g_bChkCollectBuilderBase Or $g_bChkStartClockTowerBoost Or $g_iChkBBSuggestedUpgrades Or $g_bChkEnableBBAttack Then _ClanGames()
 
 			Local $BBaseAttacked = False
@@ -916,8 +914,8 @@ EndFunc   ;==>Idle
 Func _Idle() ;Sequence that runs until Full Army
 
 	Local $TimeIdle = 0 ;In Seconds
-	If $g_bDebugSetLog Then SetDebugLog("Func Idle ", $COLOR_DEBUG)
-
+	If $g_bDebugSetlog Then SetDebugLog("Func Idle ", $COLOR_DEBUG)
+    $g_bIsFullArmywithHeroesAndSpells = true
 	While $g_bIsFullArmywithHeroesAndSpells = False
 
 		CheckAndroidReboot()
@@ -931,7 +929,8 @@ Func _Idle() ;Sequence that runs until Full Army
 		checkObstacles() ; trap common error messages also check for reconnecting animation
 		checkMainScreen(False) ; required here due to many possible exits
 		If ($g_iCommandStop = 3 Or $g_iCommandStop = 0) And $g_bTrainEnabled = True Then
-			CheckArmyCamp(True, True)
+			$g_bIsFullArmywithHeroesAndSpells = true
+			; CheckArmyCamp(True, True)
 			If _Sleep($DELAYIDLE1) Then Return
 			If ($g_bIsFullArmywithHeroesAndSpells = False) Then
 				SetLog("Army Camp is not full, Training Continues...", $COLOR_ACTION)
@@ -961,7 +960,7 @@ Func _Idle() ;Sequence that runs until Full Army
 		checkMainScreen(False) ; required here due to many possible exits
 		If $g_iCommandStop = -1 Then
 			If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
-				If CheckNeedOpenTrain($g_sTimeBeforeTrain) Then TrainSystem()
+				If CheckNeedOpenTrain($g_sTimeBeforeTrain) Then AttackMain()
 				HiddenSlotstatus()
 				If $g_bRestart = True Then ExitLoop
 				If _Sleep($DELAYIDLE1) Then ExitLoop
@@ -972,14 +971,15 @@ Func _Idle() ;Sequence that runs until Full Army
 				If $g_iActualTrainSkip >= $g_iMaxTrainSkip Then
 					$g_iActualTrainSkip = 0
 				EndIf
-				CheckArmyCamp(True, True)
+				$g_bIsFullArmywithHeroesAndSpells = true
+				; CheckArmyCamp(True, True)
 			EndIf
 		EndIf
 		If _Sleep($DELAYIDLE1) Then Return
 		If $g_iCommandStop = 0 And $g_bTrainEnabled Then
 			If Not ($g_bIsFullArmywithHeroesAndSpells) Then
 				If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
-					If CheckNeedOpenTrain($g_sTimeBeforeTrain) Or (ProfileSwitchAccountEnabled() And $g_iActiveDonate And $g_bChkDonate) Then TrainSystem() ; force check trainsystem after donate and before switch account
+					If CheckNeedOpenTrain($g_sTimeBeforeTrain) Or (ProfileSwitchAccountEnabled() And $g_iActiveDonate And $g_bChkDonate) Then AttackMain() ; force check trainsystem after donate and before switch account
 					HiddenSlotstatus()
 					If $g_bRestart Then ExitLoop
 					If _Sleep($DELAYIDLE1) Then ExitLoop
@@ -990,7 +990,8 @@ Func _Idle() ;Sequence that runs until Full Army
 					If $g_iActualTrainSkip >= $g_iMaxTrainSkip Then
 						$g_iActualTrainSkip = 0
 					EndIf
-					CheckArmyCamp(True, True)
+					$g_bIsFullArmywithHeroesAndSpells = true
+					; CheckArmyCamp(True, True)
 					If Not $g_bRunState Then Return
 				EndIf
 			EndIf
@@ -1173,9 +1174,9 @@ Func __RunFunction($action)
 		Case "DonateCC,Train"
 			If $g_iActiveDonate And $g_bChkDonate Then
 				If $g_bFirstStart Then
-					getArmyTroopCapacity(True, False)
+					;getArmyTroopCapacity(True, False)
 					If _Sleep($DELAYRESPOND) Then Return
-					getArmySpellCapacity(False, True)
+					;getArmySpellCapacity(False, True)
 					If _Sleep($DELAYRESPOND) Then Return
 				EndIf
 				; if in "Halt/Donate" don't skip near full army
@@ -1184,7 +1185,7 @@ Func __RunFunction($action)
 			If Not _Sleep($DELAYRUNBOT1) Then checkMainScreen(False)
 			If $g_bTrainEnabled Then ; check for training enabled in halt mode
 				If $g_iActualTrainSkip < $g_iMaxTrainSkip Then
-					TrainSystem()
+					AttackMain()
 					If _Sleep($DELAYRUNBOT1) Then Return
 				Else
 					SetLog("Humanize bot, prevent to delete and recreate troops " & $g_iActualTrainSkip + 1 & "/" & $g_iMaxTrainSkip, $color_blue)
@@ -1194,9 +1195,9 @@ Func __RunFunction($action)
 					EndIf
 					CheckOverviewFullArmy(True, False) ; use true parameter to open train overview window
 					If _Sleep($DELAYRESPOND) Then Return
-					getArmySpells()
+					;getArmySpells()
 					If _Sleep($DELAYRESPOND) Then Return
-					getArmyHeroCount(False, True)
+					;getArmyHeroCount(False, True)
 				EndIf
 			Else
 				If $g_bDebugSetLogTrain Then SetLog("Halt mode - training disabled", $COLOR_DEBUG)
@@ -1376,12 +1377,8 @@ Func FirstCheck()
 	If $g_iCommandStop <> 0 And $g_iCommandStop <> 3 Then
 		; VERIFY THE TROOPS AND ATTACK IF IS FULL
 		SetDebugLog("-- FirstCheck on Train --")
-		TrainSystem()
+		AttackMain()
 		If Not $g_bRunState Then Return
-		If _Sleep($DELAYRUNBOT3) Then Return
-		HiddenSlotstatus()
-		If Not $g_bRunState Then Return
-		If _Sleep($DELAYRUNBOT3) Then Return
 		SetDebugLog("Are you ready? " & String($g_bIsFullArmywithHeroesAndSpells))
 		If $g_bIsFullArmywithHeroesAndSpells Then
 			; Just in case of new profile! or BotDetectFirstTime() failed on Initiate()

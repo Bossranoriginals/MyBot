@@ -30,29 +30,29 @@ Func IsPageLoop($aCheckPixel, $iLoop = 30, $bCapturePixel = $g_bCapturePixel)
 EndFunc   ;==>IsPageLoop
 
 Func IsSettingPage($bSetLog = True, $iLoop = 30)
+	Return True
+	;If IsPageLoop($aIsSettingPage, $iLoop) Then
+	;	If ($g_bDebugSetLog Or $g_bDebugClick) And $bSetLog Then SetLog("**Setting Window OK**", $COLOR_ACTION)
+	;	Return True
+	;EndIf
 
-	If IsPageLoop($aIsSettingPage, $iLoop) Then
-		If ($g_bDebugSetLog Or $g_bDebugClick) And $bSetLog Then SetLog("**Setting Window OK**", $COLOR_ACTION)
-		Return True
-	EndIf
-
-	If $bSetLog Then SetLog("Cannot find Setting Window...", $COLOR_ERROR) ; in case of $i = 29 in while loop
-	If $g_bDebugImageSave Then SaveDebugImage("IsSettingPage")
-	If $iLoop > 1 Then AndroidPageError("IsSettingPage")
-	Return False
+	;If $bSetLog Then SetLog("Cannot find Setting Window...", $COLOR_ERROR) ; in case of $i = 29 in while loop
+	;If $g_bDebugImageSave Then SaveDebugImage("IsSettingPage")
+	;If $iLoop > 1 Then AndroidPageError("IsSettingPage")
+	;Return False
 EndFunc   ;==>IsSettingPage
 
 Func IsTrainPage($bSetLog = True, $iLoop = 30)
+	Return true
+	;If IsPageLoop($aIsTrainPgChk1, $iLoop) Then
+	;	If ($g_bDebugSetLog Or $g_bDebugClick) And $bSetLog Then SetLog("**Army Window OK**", $COLOR_ACTION)
+	;	Return True
+	;EndIf
 
-	If IsPageLoop($aIsTrainPgChk1, $iLoop) Then
-		If ($g_bDebugSetLog Or $g_bDebugClick) And $bSetLog Then SetLog("**Army Window OK**", $COLOR_ACTION)
-		Return True
-	EndIf
-
-	If $bSetLog Then SetLog("Cannot find Army Window...", $COLOR_ERROR) ; in case of $i = 29 in while loop
-	If $g_bDebugImageSave Then SaveDebugImage("IsTrainPage")
-	If $iLoop > 1 Then AndroidPageError("IsTrainPage")
-	Return False
+	;If $bSetLog Then SetLog("Cannot find Army Window...", $COLOR_ERROR) ; in case of $i = 29 in while loop
+	;If $g_bDebugImageSave Then SaveDebugImage("IsTrainPage")
+	;If $iLoop > 1 Then AndroidPageError("IsTrainPage")
+	;Return False
 EndFunc   ;==>IsTrainPage
 
 Func IsAttackPage($bCapturePixel = $g_bCapturePixel)

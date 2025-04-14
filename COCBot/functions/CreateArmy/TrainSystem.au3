@@ -17,34 +17,7 @@
 #include <MsgBoxConstants.au3>
 
 Func TrainSystem()
-	If Not $g_bTrainEnabled Then ; check for training disabled in halt mode
-		If $g_bDebugSetLogTrain Then SetLog("Halt mode - training disabled", $COLOR_DEBUG)
-		Return
-	EndIf
-
-	$g_sTimeBeforeTrain = _NowCalc()
-	StartGainCost()
-
-	BoostSuperTroop()
-
-	If $g_bQuickTrainEnable Then CheckQuickTrainTroop() ; update values of $g_aiArmyComTroops, $g_aiArmyComSpells
-
-	CheckIfArmyIsReady()
-
-	If $g_bQuickTrainEnable Then
-		QuickTrain()
-	Else
-		TrainCustomArmy()
-	EndIf
-
-	TrainSiege()
-
-	If $g_bDonationEnabled And $g_bChkDonate Then ResetVariables("donated")
-
-	ClickP($aAway, 2, 120, "#0346") ;Click Away
-	If _Sleep(500) Then Return ; Delay AFTER the click Away Prevents lots of coc restarts
-
-	EndGainCost("Train")
+	AttackMain()
 
 EndFunc   ;==>TrainSystem
 
@@ -99,7 +72,7 @@ Func CheckIfArmyIsReady()
 	If Not OpenArmyOverview(False, "CheckIfArmyIsReady()") Then Return
 	If _Sleep(250) Then Return
 
-	CheckArmyCamp(False, False, True, True)
+	;CheckArmyCamp(False, False, True, True)
 
 	If $g_bDebugSetLogTrain Then
 		SetLog(" - $g_CurrentCampUtilization : " & $g_CurrentCampUtilization)

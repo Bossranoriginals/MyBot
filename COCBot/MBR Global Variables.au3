@@ -1088,7 +1088,7 @@ Global $g_aiTrainOrder[$eTroopCount] = [ _
 		$eTroopLavaHound, $eTroopIceHound, $eTroopBowler, $eTroopSuperBowler, $eTroopIceGolem, $eTroopHeadhunter, $eTroopAppWard, $eTroopDruid]
 
 Global $g_aiHeroSlotOrder[$eHeroCount] = [$eHeroBarbarianKing, $eHeroArcherQueen, $eHeroMinionPrince, $eHeroGrandWarden, $eHeroRoyalChampion]
-Global $g_aiCmbCustomHeroOrder[$eHeroCount] = [-1, -1, -1, -1, -1]
+Global $g_aiCmbCustomHeroOrder[$eHeroCount] = [0, 1, 2, 3, 4]
 
 ; Spells Brew Order
 Global Const $g_aiSpellsOrderIcon[$eSpellCount + 1] = [ _
